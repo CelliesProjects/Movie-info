@@ -1,6 +1,8 @@
 <!doctype html>
 <?php
-  $programversion = '1.2';
+  $watchedFolder = '/media/storage/video/films';   //change this
+
+  $programversion = '1.3';
   $apiKey = trim( file_get_contents('../TMDBapikey.txt') );
   
 	$dbUrl = 'https://api.themoviedb.org/3/configuration?';
@@ -32,7 +34,7 @@
   <div id="movietitle"></div>
   	<div id="movieList">		    		  
 		<?php
-		exec('ls /media/storage/video/films',$Gevonden_films_array);
+		exec( 'ls '.$watchedFolder , $Gevonden_films_array );
 			$badchars = array(".","_"); #filenamen opschonen, alle '_' en '.' vervangen door spaties
 			foreach($Gevonden_films_array as $film_naam) {
 				$film_naam = str_replace($badchars,' ',$film_naam);
