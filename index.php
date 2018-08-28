@@ -1,6 +1,6 @@
 <!doctype html>
 <?php
-  $watchedFolder = '/media/storage/video/films';   //change this
+  $watchedFolder = '/mnt/storage/video/films';   //change this
 
   $programversion = '1.3';
   $apiKey = trim( file_get_contents('../TMDBapikey.txt') );
@@ -8,13 +8,11 @@
 	$dbUrl = 'https://api.themoviedb.org/3/configuration?';
 	$key   = '&api_key='.$apiKey;
 	$json_config = file_get_contents($dbUrl.$key);		
-	//echo $json_config;
 	$config = json_decode($json_config,true);	
 	$info = $config['images'];	
 	$base_url = $info['base_url'];
-	//echo '<br>'.$base_url;
+	$secure_base_url = $info['secure_base_url'];
 	$backdrop_size = end($info['backdrop_sizes']);
-	//echo '<br>'.$backdrop_size;	
 ?>
 <html lang="en">
 <head>
@@ -64,8 +62,8 @@ function showCast(movieID){
 	
   $(document).ready( function(){
 	  var backdrop_size = '<?php echo $backdrop_size; ?>',
-	      base_url = '<?php echo $base_url; ?>';
-	      
+	      base_url = '<?php echo $secure_base_url; ?>';
+	      console.log( '<?php echo $secure_base_url; ?>' );
 	  $('#movieList p.item').on('click',function(){	
 		  $('#movietitle').html('Loading info...');
 		  $('#movieList p.item').css('background-color','black');
@@ -82,7 +80,7 @@ function showCast(movieID){
 			    $('#viewport').css('background-image', 'none').append('<p id="noimage">No movie image found.</p>');
 			}
 			plot = results[0].overview;
-			attribution = '<p id="attribution">Movie info and graphics provided by <a href="http://themoviedb.org/" target="_blank">themoviedb.org</a></p><hr>';
+			attribution = '<p id="attribution">Movie info and graphics provided by <a href="https://themoviedb.org/" target="_blank">themoviedb.org</a></p><hr>';
 			castlink = '<p id="castLink" data-movieid="'+results[0].id+'">Click here to show the cast.</p><div id="castBox"></div>';
 			movieInfo = '<p id="moviedata">'+results[0].release_date.substr(0,4)+' - Language: '+results[0].original_language.toUpperCase()+ ' - Rating: '+results[0].vote_average+' with '+results[0].vote_count+' votes<hr></p>' ;
 			$('#movieinfo').html(attribution+castlink+movieInfo+'<p>&nbsp;&nbsp;&nbsp;Plot:</p>'+'<p>'+plot+'</p>').scrollTop(0);
@@ -91,7 +89,6 @@ function showCast(movieID){
     });		 
 		  
 	$('#movieinfo').on('click','#castLink',function(){
-		//alert($(this).data('movieid'));
 		$('#castBox').show().html('Loading cast data...');
 		$('#castLink').html('');
 		showCast($(this).data('movieid'));
