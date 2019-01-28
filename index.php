@@ -2,15 +2,15 @@
 $api_key        = trim(file_get_contents('../TMDBapikey.txt'));
 $watchedFolder  = '/mnt/storage/video/films';   //change this
 $programversion = '1.4';
-if ( $_GET['moviename'] )
+if ($_GET['moviename'])
 {
-    echo file_get_contents("https://api.themoviedb.org/3/search/movie?query=".urlencode( $_GET['moviename'] )."&language=en-US&api_key=".$api_key);
-    die();
+  echo file_get_contents("https://api.themoviedb.org/3/search/movie?query=".urlencode( $_GET['moviename'] )."&language=en-US&api_key=".$api_key);
+  die();
 }
-if ( $_GET['cast'] )
+if ($_GET['cast'])
 {
-    echo file_get_contents("https://api.themoviedb.org/3/movie/".urlencode( $_GET['cast'] )."/casts?api_key=".$api_key);
-    die();
+  echo file_get_contents("https://api.themoviedb.org/3/movie/".urlencode( $_GET['cast'] )."/casts?api_key=".$api_key);
+  die();
 }
 $config = json_decode(file_get_contents('https://api.themoviedb.org/3/configuration?&api_key='.$api_key),true);
 $info = $config['images'];
@@ -29,16 +29,16 @@ $backdrop_size = end($info['backdrop_sizes']);
 <style>
 html, body {
   min-height:100%;
-	height:100%;
-	margin:0;
-	color:yellow;
-	font-variant: small-caps;
-	background-color:black;
-	font-size:20px;
+  height:100%;
+  margin:0;
+  color:yellow;
+  font-variant: small-caps;
+  background-color:black;
+  font-size:20px;
 }
 a {
-	color:yellow;
-	text-decoration:none;
+  color:yellow;
+  text-decoration:none;
 }
 #viewport{
   position: fixed;
@@ -46,27 +46,27 @@ a {
   left: 0;
   bottom: 0;
   right: 0;
-	background: no-repeat center center fixed;
+  background: no-repeat center center fixed;
   -webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 #movieList{
-	position:absolute;
-	top:0;
-	right:0;
-	bottom:0;
-	width:30%;
-	overflow-Y:auto;
-	text-align:center;
-	background-color:black;
-	opacity:0.7;
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:30%;
+  overflow-Y:auto;
+  text-align:center;
+  background-color:black;
+  opacity:0.7;
 }
 #movieList p.item{
   padding:15px;
-	font-size:1.3em;
-	color: yellow;
+  font-size:1.3em;
+  color: yellow;
 }
 #movietitle {
   position: absolute;
@@ -96,21 +96,21 @@ a {
   font-size:20px;
 }
 #movieList p.item:hover{
-	cursor:pointer;
+  cursor:pointer;
 }
 #attribution, #moviedata {
-	text-align:right;
+  text-align:right;
 }
 #noimage {
   font-size: 2em;
-	position: absolute;
-	top: 30%;
-	transform: translateY(-50%);
-	left: 50%;
-	transform: translateX(-50%);
+  position: absolute;
+  top: 30%;
+  transform: translateY(-50%);
+  left: 50%;
+  transform: translateX(-50%);
 }
 #castLink {
-	cursor:pointer;
+  cursor:pointer;
 }
 #castBox{
   text-align: center;
