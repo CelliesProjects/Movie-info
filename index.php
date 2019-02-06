@@ -2,21 +2,21 @@
 $api_key        = trim(file_get_contents('../TMDBapikey.txt'));
 $watchedFolder  = '/mnt/storage/video/films';   //change this
 $programversion = '1.4';
-if ($_GET['moviename'])
+if (isset($_GET['moviename']))
 {
   echo file_get_contents("https://api.themoviedb.org/3/search/movie?query=".urlencode( $_GET['moviename'] )."&language=en-US&api_key=".$api_key);
   die();
 }
-if ($_GET['cast'])
+if (isset($_GET['cast']))
 {
   echo file_get_contents("https://api.themoviedb.org/3/movie/".urlencode( $_GET['cast'] )."/casts?api_key=".$api_key);
   die();
 }
+if ( count($_GET) ) die('ERROR unknown request.');
+
 $config = json_decode(file_get_contents('https://api.themoviedb.org/3/configuration?&api_key='.$api_key),true);
 $info = $config['images'];
-$secure_base_url = $info['secure_base_url'];
-$backdrop_size = end($info['backdrop_sizes']);
-
+$secure_base_url = $info['secure_base_url'].end($info['backdrop_sizes']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -120,13 +120,11 @@ a {
 <body>
 <div id="viewport">
 <div id="movietitle"></div>
-<div id="movieList">
-<?php
-exec('ls '.$watchedFolder,$Gevonden_films_array);
+<div id="movieList"><?php
+exec('ls '.$watchedFolder,$movie_array);
 $badchars = array(".","_");                                              #filenamen opschonen, alle '_' en '.' vervangen door spaties
-foreach($Gevonden_films_array as $film_naam) {
-  echo '<p class="item">'.str_replace($badchars,' ',$film_naam).'</p>';
-};
+foreach($movie_array as $film_name)
+  echo '<p class="item">'.str_replace($badchars,' ',$film_name).'</p>';
 ?>
 </div>
 <div id="movieinfo"></div>
@@ -143,25 +141,24 @@ $(document).ready( function(){
     $(this).css('background-color','red');
 
     $.getJSON(window.location.href+'?moviename='+encodeURI($(this).text()),function(data){
-      results=data.results;
-      if (!results[0]){
+      if (!data.total_results){
         $('#viewport').css('background-image', 'none');
         $('#movietitle').html('No movie information found.');
         $('#viewport').fadeTo("fast", 1);
         return;
       }
-      if (results[0].backdrop_path !== null){
-          backdrop_url = '<?php echo $secure_base_url;?>'+'<?php echo $backdrop_size;?>'+results[0].backdrop_path;
-          $('#viewport').css('background-image', 'url('+backdrop_url+')').fadeTo("fast", 1);
+      result=data.results[0];
+      if (result.backdrop_path !== null){
+          $('#viewport').css('background-image', 'url('+'<?php echo $secure_base_url;?>'+result.backdrop_path+')').fadeTo("fast", 1);
           $('#noimage').remove();
       } else {
           $('#viewport').css('background-image', 'none').append('<p id="noimage">No movie image found.</p>');
       }
       attribution = '<p id="attribution">Movie info and graphics provided by <a href="https://themoviedb.org/" target="_blank">themoviedb.org</a></p><hr>';
-      castlink = '<p id="castLink" data-movieid="'+results[0].id+'">Click here to show the cast.</p><div id="castBox"></div>';
-      movieInfo = '<p id="moviedata">'+results[0].release_date.substr(0,4)+' - Language: '+results[0].original_language.toUpperCase()+ ' - Rating: '+results[0].vote_average+' with '+results[0].vote_count+' votes<hr></p>' ;
-      $('#movieinfo').html(attribution+castlink+movieInfo+'<p>&nbsp;&nbsp;&nbsp;Plot:</p>'+'<p>'+results[0].overview+'</p>').scrollTop(0);
-      $('#movietitle').html(results[0].original_title);
+      castlink = '<p id="castLink" data-movieid="'+result.id+'">Click here to show the cast.</p><div id="castBox"></div>';
+      movieInfo = '<p id="moviedata">'+result.release_date.substr(0,4)+' - Language: '+result.original_language.toUpperCase()+ ' - Rating: '+result.vote_average+' with '+result.vote_count+' votes<hr></p>' ;
+      $('#movieinfo').html(attribution+castlink+movieInfo+'<p>&nbsp;&nbsp;&nbsp;Plot:</p>'+'<p>'+result.overview+'</p>').scrollTop(0);
+      $('#movietitle').html(result.original_title);
     });
   });
 
