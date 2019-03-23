@@ -76,6 +76,8 @@ a{
   opacity:0.7;
   height:60px;
   line-height:60px;
+  white-space:nowrap;
+  overflow:hidden;
 }
 #searchBox{
   width:30%;
