@@ -2,20 +2,17 @@
 $api_key        = trim(file_get_contents('../TMDBapikey.txt'));
 $watchedFolder  = '/mnt/storage/video/films';   //change this
 $programversion = '1.4';
-if (isset($_GET['moviename']))
-{
-  echo file_get_contents("https://api.themoviedb.org/3/search/movie?query=".urlencode( $_GET['moviename'] )."&language=en-US&api_key=".$api_key);
+if (isset($_GET['moviename'])){
+  echo file_get_contents("https://api.themoviedb.org/3/search/movie?query=".urlencode($_GET['moviename'])."&language=en-US&api_key=".$api_key);
   die();
 }
-if (isset($_GET['cast']))
-{
-  echo file_get_contents("https://api.themoviedb.org/3/movie/".urlencode( $_GET['cast'] )."/casts?api_key=".$api_key);
+if (isset($_GET['cast'])){
+  echo file_get_contents("https://api.themoviedb.org/3/movie/".urlencode($_GET['cast'])."/casts?api_key=".$api_key);
   die();
 }
 if (isset($_GET['icon']))
 {
-  if ($_GET['icon']=='search')
- {
+  if ($_GET['icon']=='search'){
     header("Content-Type: image/svg+xml");
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
     //https://material.io/tools/icons/?icon=search&style=baseline
@@ -23,7 +20,7 @@ if (isset($_GET['icon']))
   }
   die('invalid icon');
 }
-if ( count($_GET) ) die('ERROR unknown request.');
+if (count($_GET)) die('ERROR unknown request.');
 $config = json_decode(file_get_contents('https://api.themoviedb.org/3/configuration?&api_key='.$api_key),true);
 $info = $config['images'];
 $secure_base_url = $info['secure_base_url'].end($info['backdrop_sizes']);
@@ -32,7 +29,7 @@ $secure_base_url = $info['secure_base_url'].end($info['backdrop_sizes']);
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=.7, maximum-scale=.7, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1>
 <title>Movies <?php echo $programversion; ?></title>
 <meta name="description" content="Movies">
 <meta name="author" content="Cellie">
@@ -183,7 +180,6 @@ foreach($movie_array as $film_name)
 </body>
 <script>
 $(document).ready(function(){
-
   $('body').on('click','.item',function(){
     $('#searchText').val('');
     $('#viewport').fadeTo("fast", 0.4);
